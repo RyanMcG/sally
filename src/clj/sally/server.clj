@@ -36,7 +36,7 @@
     (report "Serving server at" (str "http://" ip ":" port \/))
     (run-server (create-app) {:port port
                               :ip ip
-                              :thread (env :thread-count)})))
+                              :thread (env :thread-count 4)})))
 
 (defn- get-nrepl-port-file [] (io/file ".nrepl-port"))
 (defn- serve-nrepl [port]

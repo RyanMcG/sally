@@ -45,8 +45,7 @@
                          :port 5000
                          :nrepl-port 5001
                          :ip "127.0.0.1"
-                         :log-level :info
-                         :thread-count 4}}
+                         :log-level :info}}
 
              :uberjar {:hooks [leiningen.cljsbuild]
                        :env {:stage :production
