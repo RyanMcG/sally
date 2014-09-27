@@ -28,8 +28,10 @@
       [:div#page-wrapper content]]
      (page/include-css "/boots/css/bootstrap.min.css"
                        "/boots/css/font-awesome.min.css"
-                       "/boots/css/local.css")]))
+                       "/boots/css/local.css")
+     (page/include-js "/app.js")]))
 
 (defn root-page [request]
   (layout
-    [:h1 "Welcome!"]))
+    [:h1 "Welcome!"]
+    [:div#app]))
