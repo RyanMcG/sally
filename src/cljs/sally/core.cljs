@@ -1,24 +1,27 @@
 (ns sally.core
   (:require [om.core :as om :include-macros true]
-            [om.dom :as dom :include-macros true]
+            [sablono.core :as html :refer-macros [html]]
             [figwheel.client :as figwheel :include-macros true]
             [weasel.repl :as weasel]))
 
 (defonce app-state
-  (atom
-    {:code "(+ 1 1)"}))
+  (atom {}))
+
+(defn textarea-key-up [e]
+  (.log js/console e))
+
+(defn checking-textarea [data]
+  (om/component
+    (html [:textarea {:on-key-up textarea-key-up}])))
 
 (om/root
-  (fn [app owner]
-    (reify om/IRender
-      (render [_]
-        (dom/textarea nil (:code app)))))
+  checking-textarea
   app-state
   {:target (. js/document (getElementById "app"))})
 
-(def is-dev (.contains (.. js/document -body -classList) "is-dev"))
+(def is-dev? (.contains (.. js/document -body -classList) "is-dev"))
 
-(when is-dev
+(when is-dev?
   (enable-console-print!)
   (figwheel/watch-and-reload
    :websocket-url "ws://localhost:3449/figwheel-ws"
