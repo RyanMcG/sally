@@ -4,13 +4,15 @@
             [figwheel.client :as figwheel :include-macros true]
             [weasel.repl :as weasel]))
 
-(defonce app-state (atom {:text "Hello Chestnut!"}))
+(defonce app-state
+  (atom
+    {:code "(+ 1 1)"}))
 
 (om/root
   (fn [app owner]
     (reify om/IRender
       (render [_]
-        (dom/h1 nil (:text app)))))
+        (dom/textarea nil (:code app)))))
   app-state
   {:target (. js/document (getElementById "app"))})
 

@@ -41,4 +41,5 @@
 (defn root-page [request]
   (layout
     [:h1 "Welcome!"]
+    [:h2 "Enter some code:"]
     [:div#app]))
