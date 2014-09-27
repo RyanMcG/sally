@@ -1,12 +1,14 @@
 (ns sally.views
-  (:require (hiccup [page :as page])))
+  (:require (hiccup [page :as page])
+            [environ.core :refer (env)]))
 
 (defn layout [& content]
+  (env :stage :dev)
   (page/html5
     [:head
      (page/include-js "/boots/js/jquery-1.10.2.min.js"
                       "/boots/js/bootstrap.min.js")]
-    [:body
+    [:body {:class (str "is-" (name (env :stage :dev)))}
      [:div#wrapper
       [:nav.navbar.navbar-inverse.navbar-fixed-top {:role "navigation"}
        [:div.navbar-header
