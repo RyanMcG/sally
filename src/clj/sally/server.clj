@@ -3,7 +3,6 @@
             (compojure [core :refer [GET routes]]
                        [route :refer [resources]])
             [com.stuartsierra.component :as component]
-            (hiccup [page :as page])
             [taoensso.timbre :refer [report info]]
             (ring.middleware [defaults :refer [wrap-defaults site-defaults]]
                              [format :refer [wrap-restful-format]])
