@@ -2,7 +2,7 @@
   (:require [taoensso.timbre :as timbre]
             [com.stuartsierra.component :as component]
             [environ.core :refer [env]]
-            (sally [server :refer [create-http-server]])))
+            (sally [server :refer [create-browser-repl create-http-server]])))
 
 (defn- setup-timbre! []
   (timbre/set-level! (env :log-level))
