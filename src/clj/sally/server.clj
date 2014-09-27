@@ -10,14 +10,9 @@
             [environ.core :refer (env)]
             [cemerick.piggieback :as piggieback]
             [weasel.repl.websocket :as weasel]
+            (sally [views :refer :all])
             [clojure.tools.nrepl.server :as nrepl]
             [org.httpkit.server :refer [run-server]]))
-
-
-(defn root-page [request]
-  (page/html5
-    [:h1 "Sally"]
-    [:h2 "Welcome!"]))
 
 (defn- create-app
   "Create a ring application that is a deverlopment friendly server."
