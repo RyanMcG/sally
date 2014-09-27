@@ -1,11 +1,17 @@
 (ns sally.views
-  (:require (hiccup [page :as page])
+  (:require (hiccup [page :as page]
+                    [core :refer [html]]
+                    [element :refer [javascript-tag]])
             [environ.core :refer (env)]))
 
+(def in-dev? (= :dev (env :stage :dev)))
+
 (defn layout [& content]
-  (env :stage :dev)
   (page/html5
     [:head
+     (page/include-css "/boots/css/bootstrap.min.css"
+                       "/boots/css/font-awesome.min.css"
+                       "/boots/css/local.css")
      (page/include-js "/boots/js/jquery-1.10.2.min.js"
                       "/boots/js/bootstrap.min.js")]
     [:body {:class (str "is-" (name (env :stage :dev)))}
@@ -26,10 +32,11 @@
         [:ul.nav.navbar-nav.navbar-right.navbar-user
          [:li [:a {:href "/something"} "Anything"]]]]]
       [:div#page-wrapper content]]
-     (page/include-css "/boots/css/bootstrap.min.css"
-                       "/boots/css/font-awesome.min.css"
-                       "/boots/css/local.css")
-     (page/include-js "/app.js")]))
+
+     (if in-dev? (page/include-js "/out/goog/base.js"
+                                  "/react/react.js"))
+     (page/include-js "/app.js")
+     (if in-dev? (javascript-tag "goog.require('sally.core')"))]))
 
 (defn root-page [request]
   (layout
