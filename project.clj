@@ -38,9 +38,8 @@
                                         :optimizations :none
                                         :pretty-print  true}}}}
 
-  :profiles {:dev {:dependencies [[spyscope "0.1.4"]]
+  :profiles {:dev {:dependencies []
                    :repl-options {:init-ns sally.repl}
-                   :injections [(require 'spyscope.core)]
                    :plugins [[lein-figwheel "0.1.4-SNAPSHOT"]]
                    :figwheel {:http-server-root "public"
                               :port 3449}
