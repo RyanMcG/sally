@@ -19,6 +19,7 @@
                  [environ "1.0.0"]
                  [com.cemerick/piggieback "0.1.3"]
                  [com.taoensso/timbre "3.1.6"]
+                 [sablono "0.2.22"]
                  [weasel "0.4.0-SNAPSHOT"]
                  [jonase/kibit "0.0.8"]]
 
