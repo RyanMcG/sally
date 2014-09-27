@@ -1,4 +1,5 @@
 # sally
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/clojurecup2014/sally?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 Static Analysis Library and service yo!
 
