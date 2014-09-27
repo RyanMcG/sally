@@ -41,12 +41,18 @@
                    :plugins [[lein-figwheel "0.1.4-SNAPSHOT"]]
                    :figwheel {:http-server-root "public"
                               :port 3449}
-                   :env {:is-dev true
+                   :env {:stage :dev
                          :port 5000
+                         :nrepl-port 5001
+                         :ip "127.0.0.1"
+                         :log-level :info
                          :thread-count 4}}
 
              :uberjar {:hooks [leiningen.cljsbuild]
-                       :env {:production true}
+                       :env {:stage :production
+                             :ip "185.12.6.20"
+                             :log-level :warn
+                             :port 80}
                        :omit-source true
                        :aot :all
                        :cljsbuild {:builds {:app
