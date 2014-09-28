@@ -27,6 +27,7 @@ h1 {
   max-height: 100%;
   font: 16pt/1.4em monospace;
   border: 1px solid #ddd;
+  border-radius: 2px;
   outline: 0;
   padding: .5em;
 }
@@ -76,6 +77,10 @@ h1 {
 .issue pre {
   padding: 0;
   color: #111;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  padding: 2pt 4pt;
   margin: 0.4em 0 0 1em;
 }
 
