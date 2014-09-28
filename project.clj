@@ -36,7 +36,8 @@
                                         :output-dir    "resources/public/out"
                                         :source-map    "resources/public/out.js.map"
                                         :preamble      ["react/react.min.js"]
-                                        :externs       ["react/externs/react.js"]
+                                        :externs       ["react/externs/react.js"
+                                                        "resources/public/boots/js/jquery-1.10.2.min.js"]
                                         :optimizations :none
                                         :pretty-print  true}}}}
 
