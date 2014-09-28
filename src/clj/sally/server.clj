@@ -1,6 +1,6 @@
 (ns sally.server
   (:require [clojure.java.io :as io]
-            (compojure [core :refer [GET routes]]
+            (compojure [core :refer [POST GET routes]]
                        [route :refer [resources]])
             [com.stuartsierra.component :as component]
             [taoensso.timbre :refer [report info]]
@@ -18,7 +18,8 @@
   []
   (-> (routes (resources "/")
               (resources "/react" {:root "react"})
-              (GET "/" req (root-page req)))
+              (GET "/" req (root-page req))
+              (POST "/check-form" req (check-form req)))
       (wrap-restful-format)
       (wrap-defaults api-defaults)))
 

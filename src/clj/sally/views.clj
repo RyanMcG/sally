@@ -2,6 +2,7 @@
   (:require (hiccup [page :as page]
                     [core :refer [html]]
                     [element :refer [javascript-tag]])
+            [sally.checkers.core :refer [check]]
             [environ.core :refer (env)]))
 
 (def in-dev? (= :dev (env :stage :dev)))
@@ -43,3 +44,11 @@
     [:h1 "Welcome!"]
     [:h2 "Enter some code:"]
     [:div#app]))
+
+(defn edn-resp [data & [status]]
+  {:status (or status 200)
+   :headers {"Content-Type" "application/edn"}
+   :body (pr-str data)})
+
+(defn check-form [{form :body-params}]
+  (edn-resp (check form)))

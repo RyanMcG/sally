@@ -37,5 +37,5 @@
 (defn check
   ([checkable checkers]
    (into {} (for [checker checkers]
-              [checker (checker checkable)])))
+              [(:sally (meta checker)) (checker checkable)])))
   ([checkable] (check checkable checkers)))
