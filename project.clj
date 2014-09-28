@@ -58,7 +58,7 @@
                              :log-level :warn
                              :port 80}
                        :omit-source true
-                       :aot [sally.main]
+                       :aot []
                        :cljsbuild {:builds {:app
                                             {:compiler
                                              {:optimizations :advanced
