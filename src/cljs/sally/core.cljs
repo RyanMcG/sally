@@ -21,9 +21,10 @@
 
 (defn checking-textarea [data owner]
   (om/component
-    (html [:textarea {:ref "code-area"
-                      :on-change (ig change-code data owner)}
-           (:code data)])))
+    (html [:div#code-area
+           [:textarea {:ref "code-area"
+                       :on-change (ig change-code data owner)}
+           (:code data)]])))
 
 (defn display-issue [issue]
   (reify
