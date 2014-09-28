@@ -38,5 +38,6 @@
   ([checkable checkers]
    (for [checker checkers]
      (assoc (:sally (meta checker))
-            :issues (checker checkable))))
+            :issues (binding [*read-eval* false]
+                      (checker checkable)))))
   ([checkable] (check checkable checkers)))
