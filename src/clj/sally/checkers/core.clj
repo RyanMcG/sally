@@ -36,8 +36,11 @@
 
 (defn check
   ([checkable checkers]
-   (for [checker checkers]
-     (assoc (:sally (meta checker))
-            :issues (binding [*read-eval* false]
-                      (checker checkable)))))
+   (keep identity
+         (for [checker checkers
+               :let [issues (binding [*read-eval* false]
+                              (checker checkable))]
+               :when (seq issues)]
+           (assoc (:sally (meta checker))
+                  :issues issues))))
   ([checkable] (check checkable checkers)))
