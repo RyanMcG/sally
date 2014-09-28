@@ -1,6 +1,5 @@
 (ns sally.core
   (:require [om.core :as om :include-macros true]
-            [ajax.core :refer [POST]]
             [sablono.core :as html :refer-macros [html]]
             [figwheel.client :as figwheel :include-macros true]
             [weasel.repl :as weasel]))
