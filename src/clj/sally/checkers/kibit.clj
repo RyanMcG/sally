@@ -1,5 +1,6 @@
 (ns sally.checkers.kibit
   (:require [kibit.check :as kc]
+            [clojure.edn :as edn]
             [sally.checkers.meta :refer [add-sally-metadata]])
   (:import [java.io File Reader]
            [clojure.lang PersistentList]))
@@ -15,7 +16,10 @@
   (check [f] (kc/check-file f))
 
   PersistentList
-  (check [expr] (kc/check-expr expr)))
+  (check [expr] (kc/check-expr expr))
+
+  String
+  (check [s] (check (edn/read-string s))))
 
 (add-sally-metadata check
                     :name "kibit"
