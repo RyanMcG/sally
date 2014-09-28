@@ -1,28 +1,28 @@
 (ns sally.core
   (:require [om.core :as om :include-macros true]
+            [jayq.core :as jq]
             [sablono.core :as html :refer-macros [html]]
             [figwheel.client :as figwheel :include-macros true]
             [weasel.repl :as weasel]))
 
 (defonce app-state
   (atom {:code ""
-         :issues {{:name "kibit"} ["something"]}}))
+         :issues []}))
 
 (defn- get-ref-value [owner ref-name]
   (-> (om/get-node owner ref-name) .-value))
 
 (defn ig [f & more] (fn [_] (apply f more)))
 
-(defn textarea-key-up [cursor owner]
+(defn change-code [cursor owner]
   (om/transact! cursor
                 :code (ig get-ref-value owner "code-area")
-                :code-change)
-  (println @cursor))
+                :code-change))
 
 (defn checking-textarea [data owner]
   (om/component
     (html [:textarea {:ref "code-area"
-                      :on-key-up (ig textarea-key-up data owner)}
+                      :on-change (ig change-code data owner)}
            (:code data)])))
 
 (defn display-issue [issue]
@@ -32,9 +32,9 @@
     om/IRender
     (render [_] (html [:li.issue (pr-str issue)]))))
 
-(defn display-checker [[checker issues]]
+(defn display-checker [{:keys [name issues]}]
   (om/component
-    (html [:ul {:id (str "checker-" (:name checker))}
+    (html [:ul {:id (str "checker-" (:name name))}
            (om/build-all display-issue issues)])))
 
 (defn live-checking [data owner]
@@ -44,11 +44,31 @@
            [:div#issues-display
             (om/build-all display-checker (get data :issues))]])))
 
-(om/root
+(defmulti listen (fn [tx-data _] (:tag tx-data)))
+; (defmethod listen :default (constantly nil))
 
+(defn- edn-post [url [content-type data] success-fn]
+  (jq/ajax url
+           {:type "POST"
+            :data data
+            :headers {:Accept "application/edn"}
+            :contentType content-type
+            :success success-fn}))
+
+
+(defmethod listen :code-change [tx-data root-cursor]
+  (edn-post "/check"
+            ["text/plain" (:code @root-cursor)]
+            (fn code-change-post-success [resp]
+              (om/transact! root-cursor
+                            :issues (constantly resp)))))
+(defmethod listen :default [_ _] nil)
+
+(om/root
   live-checking
   app-state
-  {:target (. js/document (getElementById "app"))})
+  {:tx-listen listen
+   :target (. js/document (getElementById "app"))})
 
 (def is-dev? (.contains (.. js/document -body -classList) "is-dev"))
 
