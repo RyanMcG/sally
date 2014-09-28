@@ -1,12 +1,15 @@
 (ns sally.core
   (:require [om.core :as om :include-macros true]
             [jayq.core :as jq]
+            [clojure.string :as s]
             [sablono.core :as html :refer-macros [html]]
             [figwheel.client :as figwheel :include-macros true]
             [weasel.repl :as weasel]))
 
+(def ^:private kibit-example (str '(when (not anything) something)))
+
 (defonce app-state
-  (atom {:code ""
+  (atom {:code kibit-example
          :issues []}))
 
 (defn- get-ref-value [owner ref-name]
@@ -15,20 +18,20 @@
 (defn ig [f & more] (fn [_] (apply f more)))
 
 (defn change-code [cursor owner]
-  (om/transact! cursor
-                :code (ig get-ref-value owner "code-area")
-                :code-change))
+  (om/update! cursor
+              [:code] (get-ref-value owner "code-area")
+              :code-change))
 
 (defn checking-textarea [data owner]
   (om/component
     (html [:div#code-area
            [:textarea {:ref "code-area"
-                       :on-change (ig change-code data owner)}
-           (:code data)]])))
+                       :on-change (ig change-code data owner)
+                       :value (:code data)}]])))
 
 (defn code->hiccup [class-name code]
   [:pre {:class class-name}
-   [:code (pr-str code)]])
+   [:code (s/trim (pr-str code))]])
 
 (defn display-issue [{:keys [alt expr line column]}]
   (reify
@@ -41,9 +44,9 @@
               [:span.line line]
               [:span.column column]]
              [:div.suggestion
-              "Use "
+              "Use:"
               (code->hiccup :alt alt)
-              " instead of "
+              "instead of:"
               (code->hiccup :expr expr)]]))))
 
 (defn display-checker [{:keys [name source description issues]}]
@@ -54,15 +57,6 @@
             " found..."]
            [:ul.issues (om/build-all display-issue issues)]])))
 
-(defn live-checking [data owner]
-  (om/component
-    (html [:div#live-checking
-           (om/build checking-textarea data)
-           [:div#issues-display
-            (om/build-all display-checker (get data :issues))]])))
-
-(defmulti listen (fn [tx-data _] (:tag tx-data)))
-(defmethod listen :default [_ _] nil)
 
 (defn- edn-post [url [content-type data] success-fn]
   (jq/ajax url
@@ -72,13 +66,27 @@
             :contentType content-type
             :success success-fn}))
 
-
-(defmethod listen :code-change [tx-data root-cursor]
+(defn check [root-cursor & [data]]
   (edn-post "/check"
-            ["text/plain" (:code @root-cursor)]
+            ["text/plain" (or data (:code @root-cursor))]
             (fn code-change-post-success [resp]
-              (om/transact! root-cursor
-                            :issues (constantly resp)))))
+              (om/update! root-cursor [:issues] resp))))
+
+(defn live-checking [data owner]
+  (reify
+    om/IWillMount
+    (will-mount [_] (check data kibit-example))
+    om/IRender
+    (render [_]
+      (html [:div#live-checking
+             (om/build checking-textarea data)
+             [:div#issues-display
+              (om/build-all display-checker (get data :issues))]]))))
+
+(defmulti listen (fn [tx-data _] (:tag tx-data)))
+(defmethod listen :default [_ _] nil)
+
+(defmethod listen :code-change [_ root-cursor] (check root-cursor))
 
 (om/root
   live-checking
