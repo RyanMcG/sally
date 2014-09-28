@@ -26,12 +26,24 @@
                        :on-change (ig change-code data owner)}
            (:code data)]])))
 
-(defn display-issue [issue]
+(defn code->hiccup [class-name code]
+  [:pre {:class class-name}
+   [:code (pr-str code)]])
+
+(defn display-issue [{:keys [alt expr line column]}]
   (reify
     om/IDisplayName
     (display-name [_] "Issue")
     om/IRender
-    (render [_] (html [:li.issue (pr-str issue)]))))
+    (render [_]
+      (html [:li.issue
+             [:div.line line]
+             [:div.column column]
+             [:div.suggestion
+              "Use "
+              (code->hiccup :alt alt)
+              " instead of "
+              (code->hiccup :expr expr)]]))))
 
 (defn display-checker [{:keys [name issues]}]
   (om/component
@@ -46,7 +58,7 @@
             (om/build-all display-checker (get data :issues))]])))
 
 (defmulti listen (fn [tx-data _] (:tag tx-data)))
-; (defmethod listen :default (constantly nil))
+(defmethod listen :default [_ _] nil)
 
 (defn- edn-post [url [content-type data] success-fn]
   (jq/ajax url
@@ -63,7 +75,6 @@
             (fn code-change-post-success [resp]
               (om/transact! root-cursor
                             :issues (constantly resp)))))
-(defmethod listen :default [_ _] nil)
 
 (om/root
   live-checking
