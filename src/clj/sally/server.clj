@@ -5,13 +5,22 @@
             [com.stuartsierra.component :as component]
             [taoensso.timbre :refer [report info]]
             (ring.middleware [defaults :refer [wrap-defaults api-defaults]]
-                             [format :refer [wrap-restful-format]])
+                             [format-response :refer [wrap-restful-response]]
+                             [format-params :refer [make-type-request-pred
+                                                    wrap-clojure-params]])
             [environ.core :refer (env)]
             [cemerick.piggieback :as piggieback]
             [weasel.repl.websocket :as weasel]
             (sally [views :refer :all])
             [clojure.tools.nrepl.server :as nrepl]
             [org.httpkit.server :refer [run-server]]))
+
+(def ^:private text-request? (make-type-request-pred #"text/(clojure|plain)"))
+(defn- wrap-text-body [handler]
+  (wrap-clojure-params handler
+                       :predicate text-request?
+                       :binary? false
+                       :decoder identity))
 
 (defn- create-app
   "Create a ring application that is a deverlopment friendly server."
@@ -20,7 +29,9 @@
               (resources "/react" {:root "react"})
               (GET "/" req (root-page req))
               (POST "/check" req (handle-check req)))
-      (wrap-restful-format)
+      (wrap-restful-response :formats [:json-kw :edn])
+      (wrap-text-body)
+      (wrap-clojure-params)
       (wrap-defaults api-defaults)))
 
 (defn- serve

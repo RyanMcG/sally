@@ -49,5 +49,5 @@
   {:status (or status 200)
    :body data})
 
-(defn handle-check [{form :body-params}]
-  (resp (check form)))
+(defn handle-check [{:keys [body-params body] :as req}]
+  (resp (check (or body-params body))))
