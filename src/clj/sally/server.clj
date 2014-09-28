@@ -4,7 +4,7 @@
                        [route :refer [resources]])
             [com.stuartsierra.component :as component]
             [taoensso.timbre :refer [report info]]
-            (ring.middleware [defaults :refer [wrap-defaults site-defaults]]
+            (ring.middleware [defaults :refer [wrap-defaults api-defaults]]
                              [format :refer [wrap-restful-format]])
             [environ.core :refer (env)]
             [cemerick.piggieback :as piggieback]
@@ -20,7 +20,7 @@
               (resources "/react" {:root "react"})
               (GET "/" req (root-page req)))
       (wrap-restful-format)
-      (wrap-defaults site-defaults)))
+      (wrap-defaults api-defaults)))
 
 (defn- serve
   "Start a development server."
