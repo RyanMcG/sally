@@ -45,10 +45,9 @@
     [:h2 "Enter some code:"]
     [:div#app]))
 
-(defn edn-resp [data & [status]]
+(defn resp [data & [status]]
   {:status (or status 200)
-   :headers {"Content-Type" "application/edn"}
-   :body (pr-str data)})
+   :body data})
 
-(defn check-form [{form :body-params}]
-  (edn-resp (check form)))
+(defn handle-check [{form :body-params}]
+  (resp (check form)))

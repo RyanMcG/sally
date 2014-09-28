@@ -19,7 +19,7 @@
   (-> (routes (resources "/")
               (resources "/react" {:root "react"})
               (GET "/" req (root-page req))
-              (POST "/check-form" req (check-form req)))
+              (POST "/check" req (handle-check req)))
       (wrap-restful-format)
       (wrap-defaults api-defaults)))
 
