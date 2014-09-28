@@ -1,25 +1,29 @@
 (ns sally.checkers.kibit
   (:require [kibit.check :as kc]
             [clojure.edn :as edn]
+            [clojure.java.io :as io]
             [sally.checkers.meta :refer [add-sally-metadata]])
-  (:import [java.io File Reader]
+  (:import [java.io File Reader StringReader]
            [clojure.lang PersistentList]))
 
 (defprotocol KibitCheck
-  (check [thing]))
+  (check-impl [thing]))
 
 (extend-protocol KibitCheck
   Reader
-  (check [r] (kc/check-reader r))
+  (check-impl [r] (kc/check-reader r))
 
   File
-  (check [f] (kc/check-file f))
+  (check-impl [f] (kc/check-file f))
 
   PersistentList
-  (check [expr] (kc/check-expr expr))
+  (check-impl [expr] (list (kc/check-expr expr)))
 
   String
-  (check [s] (check (edn/read-string s))))
+  (check-impl [s] (check-impl (StringReader. s))))
+
+(def kibit->issues identity) ;; No transformation necessary
+(defn check [thing] (kibit->issues (check-impl thing)))
 
 (add-sally-metadata check
                     :name "kibit"
