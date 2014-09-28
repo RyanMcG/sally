@@ -37,18 +37,22 @@
     om/IRender
     (render [_]
       (html [:li.issue
-             [:div.line line]
-             [:div.column column]
+             [:div.loc {:title (str "On line " line ", column " column)}
+              [:span.line line]
+              [:span.column column]]
              [:div.suggestion
               "Use "
               (code->hiccup :alt alt)
               " instead of "
               (code->hiccup :expr expr)]]))))
 
-(defn display-checker [{:keys [name issues]}]
+(defn display-checker [{:keys [name source description issues]}]
   (om/component
-    (html [:ul {:id (str "checker-" (:name name))}
-           (om/build-all display-issue issues)])))
+    (html [:div.checker {:id (str "checker-" (.toLowerCase name))}
+           [:h3.checker-name [:a {:href source
+                                  :title description} name]
+            " found..."]
+           [:ul.issues (om/build-all display-issue issues)]])))
 
 (defn live-checking [data owner]
   (om/component

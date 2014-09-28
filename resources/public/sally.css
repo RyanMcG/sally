@@ -1,7 +1,7 @@
 body {
   background: #f6f6f6;
   font: 16pt/1.4em serif;
-  color: #333333;
+  color: #444;
 }
 
 textarea {
@@ -16,7 +16,7 @@ textarea {
 
 h1 {
   margin: 0 auto;
-  padding: 1em;
+  padding: 0.8em;
   text-align: center;
 }
 
@@ -29,4 +29,60 @@ h1 {
   border: 1px solid #ddd;
   outline: 0;
   padding: .5em;
+}
+
+#issues-display {
+  padding: 0.5em;
+}
+
+.loc {
+  font: 14pt/1.2em monospace;
+  float: left;
+  color: #888;
+  border: 1px solid #bbb;
+  border-radius: 2px;
+}
+
+.line {
+  border-right: 1px solid #bbb;
+}
+
+.line, .column {
+  min-width: 1.5em;
+  display: inline-block;
+  text-align: center;
+}
+
+.suggestion {
+  float: left;
+  margin-left: 1em
+}
+
+.issues, .issue {
+  list-style: none;
+}
+
+.issues {
+  padding: 0 0 0 1em;
+  margin: 0;
+}
+
+.issue {
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+
+.issue pre {
+  padding: 0;
+  color: #111;
+  margin: 0.4em 0 0 1em;
+}
+
+.checker-name {
+  margin: 0.5em 0;
+}
+
+.checker-name:first-child {
+  margin-top: 0;
 }
